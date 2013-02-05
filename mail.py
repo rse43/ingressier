@@ -28,7 +28,7 @@ class NotificationMailHandler(InboundMailHandler):
             if owner_match:
                 owner = owner_match.group(1)
             
-            match = activity_regex.findall(decoded_html)
+            match = link_regex.findall(decoded_html)
             for group in match:
                 attacker = group[1]
                 attack_hours = float(group[2].split(':')[0]) + float(int(group[2].split(':')[0])/100)
