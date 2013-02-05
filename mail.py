@@ -16,15 +16,18 @@ from bs4 import BeautifulSoup
 class NotificationMailHandler(InboundMailHandler):
     def receive(self, mail_message):
         logging.info("Received a message from: " + mail_message.sender)
-        html_bodies = mail_message.bodies('text/html')
-        owner_regex = re.compile('^(.*),<br/><br/>')
+        logging.info(mail_message.original)
+        owner_regex = re.compile('([a-zA-Z0-9]+?),<br/>')
         link_regex = re.compile("Your Link has been destroyed by (.*?) at (.*?) hrs. \- \<a href\=3D\"http:\/\/www\.ingress\.com\/intel\?latE6=3D(.*?)&lngE6=3D(.*?)\&z=3D19\">View start location\<\/a\> - <a href=3D\"http:\/\/www\.ingress\.com\/intel\?latE6=3D(.*?)&lngE6=3D(.*?)&z=3D19\">View end location<\/a>")
         item_regex = re.compile("(\d+?) (.+?) were destroyed by (.*?) at (.*?) hrs. \- \<a href\=3D\"http:\/\/www\.ingress\.com\/intel\?latE6=3D(.*?)&lngE6=3D(.*?)\&z=3D19\">View location\<\/a\>")
-        for content_type, body in html_bodies:
+        for content_type, body in mail_message.bodies('text/html'):
             decoded_html = str(BeautifulSoup(body.decode()))
-            logging.info(decoded_html)
 
-            owner = owner_regex.match(decoded_html).group(1)
+            owner_match = owner_regex.match(decoded_html)
+            owner = "Unknown"
+            if owner_match:
+                owner = owner_match.group(1)
+            
             match = activity_regex.findall(decoded_html)
             for group in match:
                 attacker = group[1]
