@@ -9,10 +9,12 @@ handlers:
   script: mail.app
   login: admin
 
+- url: /_ah/xmpp/.+
+  script: chat.app
+  login: admin
+
 - url: /.*
   script: main.app
-
-
 
 libraries:
 - name: lxml
@@ -20,3 +22,7 @@ libraries:
 
 inbound_services:
 - mail
+- xmpp_message
+- xmpp_presence
+- xmpp_subscribe
+- xmpp_error
