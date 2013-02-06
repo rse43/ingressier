@@ -21,7 +21,8 @@ class NotificationMailHandler(InboundMailHandler):
         link_regex = re.compile("Your Link has been destroyed by (.*?) at (.*?) hrs. \- \<a href\=3D\"http:\/\/www\.ingress\.com\/intel\?latE6=3D(.*?)&lngE6=3D(.*?)\&z=3D19\">View start location\<\/a\> - <a href=3D\"http:\/\/www\.ingress\.com\/intel\?latE6=3D(.*?)&lngE6=3D(.*?)&z=3D19\">View end location<\/a>")
         item_regex = re.compile("(\d+?) (.+?) were destroyed by (.*?) at (.*?) hrs. \- \<a href\=3D\"http:\/\/www\.ingress\.com\/intel\?latE6=3D(.*?)&lngE6=3D(.*?)\&z=3D19\">View location\<\/a\>")
         for content_type, body in mail_message.bodies('text/html'):
-            decoded_html = str(BeautifulSoup(body.decode()))
+            decoded_html = body.decode()
+            logging.info(decoded_html)
 
             owner_match = owner_regex.match(decoded_html)
             owner = "Unknown"
