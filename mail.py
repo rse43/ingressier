@@ -32,12 +32,11 @@ class NotificationMailHandler(InboundMailHandler):
                 logging.info(decoded_text)
                 
                 reply_email = sender_match.group(1)
-                link_match = re.search('(^https://mail.google.com/mail/.*$)', decoded_text, re.MULTILINE)
+                link_match = re.search('(^https://.*?mail.google.com/mail/.*$)', decoded_text, re.MULTILINE)
                 if link_match:
-                    logging.info("yes! it's a match")
                     link = link_match.group(1)
-                    sender_address = "Ingressier Support <support@ingressier.appspotmail.com>"
-                    subject = "Gmail Forwarding Confirmation - to info@ingressier.appspotmail.com"
+                    sender_address = "Sydney Resistance Watch <info@sydneyresistancewatch.appspotmail.com>"
+                    subject = "Gmail Forwarding Confirmation - to info@sydneyresistancewatch.appspotmail.com"
                     body = """
                         Please confirm your forwarding setting by
                         clicking on the link below:
@@ -48,7 +47,7 @@ class NotificationMailHandler(InboundMailHandler):
                     mail.send_mail(sender_address, reply_email, subject, body)
 
         try:
-            owner_regex = re.compile('([a-zA-Z0-9]+?),<br>')
+            owner_regex = re.compile('([a-zA-Z0-9]+?),<br/>')
             link_regex = re.compile("Your Link has been destroyed by (.*?) at (.*?) hrs\..*?<a href\=\"http:\/\/www\.ingress\.com\/intel\?latE6=(.*?)&.*?lngE6=(.*?)&.*?\">View start location\<\/a\>.*?<a href=\"http:\/\/www\.ingress\.com\/intel\?latE6=(.*?)&.*?lngE6=(.*?)&.*?\">View end location<\/a>")
             item_regex = re.compile("(\d+?) ([a-zA-Z0-9()]+?) were destroyed by (.*?) at (.*?) hrs\..*?<a href\=\"http:\/\/www\.ingress\.com\/intel\?latE6=(.*?)&.*?lngE6=(.*?)&.*?\">View location\<\/a\>")
             for content_type, body in mail_message.bodies('text/html'):
@@ -58,10 +57,11 @@ class NotificationMailHandler(InboundMailHandler):
                 owner = "Unknown"
                 if owner_match:
                     owner = owner_match.group(1)
+                else:
+                    logging.debug(decoded_html)
                 
                 match = link_regex.findall(decoded_html)
                 for group in match:
-                    logging.debug(str(group))
                     attacker = group[0]
                     attack_time = datetime.time(hour=int(group[1].split(':')[0]), minute=int(group[1].split(':')[1]))
                     start_latitude = float(group[2])/1000000
@@ -75,7 +75,6 @@ class NotificationMailHandler(InboundMailHandler):
 
                 match = item_regex.findall(decoded_html)
                 for group in match:
-                    logging.debug(str(group))
                     item_amount = int(group[0])
                     item_type = group[1]
                     attacker = group[2]

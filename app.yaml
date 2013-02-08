@@ -1,4 +1,4 @@
-application: ingressier
+application: sydneyresistancewatch
 version: 1
 runtime: python27
 api_version: 1
@@ -23,6 +23,3 @@ libraries:
 inbound_services:
 - mail
 - xmpp_message
-- xmpp_presence
-- xmpp_subscribe
-- xmpp_error
