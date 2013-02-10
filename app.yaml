@@ -13,8 +13,18 @@ handlers:
   script: chat.app
   login: admin
 
+- url: /static/style.css
+  static_files: static/style.css
+  upload: static/style.css
+
+- url: /static
+  static_dir: static
+
+- url: /heatmap.*
+  script: heatmap.app
+
 - url: /.*
-  script: main.app
+  script: processor.app
 
 libraries:
 - name: lxml

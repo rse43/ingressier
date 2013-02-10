@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Sydney Resistance Heatmap</title>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <link href="/static/style.css" rel="stylesheet">
+    <script>
+      var map, pointarray, heatmap;
+
+      var resistanceData = [];
+
+      function initialize() {
+        var mapOptions = {
+          zoom: 13,
+          center: new google.maps.LatLng(-33.8683, 151.2086),
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        $.ajax({
+          url: "/heatmap.json",
+          async: false
+        }).done(function ( data ) {
+          $.each(data, function(key, loc) {
+            resistanceData.push({location: new google.maps.LatLng(loc.latitude, loc.longitude), weight: loc.weight});
+            });           
+          });
+
+        map = new google.maps.Map(document.getElementById('map_canvas'),
+            mapOptions);
+
+        pointArray = new google.maps.MVCArray(resistanceData);
+
+        heatmap = new google.maps.visualization.HeatmapLayer({
+          data: pointArray,
+          opacity: 0.8,
+          radius: 30
+        });
+
+        heatmap.setMap(map);
+      }
+    </script>
+  </head>
+
+  <body onload="initialize()">
+    <div id="map_canvas"></div>
+  </body>
+</html>
