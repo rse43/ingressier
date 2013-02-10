@@ -32,7 +32,7 @@ class HeatmapJSONHandler(webapp2.RequestHandler):
             for result in query_results:
                 results.append(dict(latitude=result.portal_location.lat, longitude=result.portal_location.lon, weight=result.activity_times))
             output = json.dumps(results)
-            memcache.add('heatmap_json', output, 60)
+            memcache.add('heatmap_json', output, 600)
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(output)

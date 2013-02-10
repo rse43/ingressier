@@ -1,0 +1,4 @@
+cron:
+- description: process the incoming data
+  url: /process
+  schedule: every 10 minutes

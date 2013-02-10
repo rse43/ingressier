@@ -25,6 +25,7 @@ handlers:
 
 - url: /.*
   script: processor.app
+  login: admin
 
 libraries:
 - name: lxml
