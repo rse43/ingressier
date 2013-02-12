@@ -33,3 +33,9 @@ class PortalActivity(db.Model):
 class ProcessTimeCursor(db.Model):
     latest_processed_time=db.DateTimeProperty(required=True)
     cursor_added_at = db.DateTimeProperty(auto_now_add=True)
+
+class NotificationSetting(db.Model):
+    email = db.StringProperty(required=True)
+    centre_location = db.GeoPtProperty(required=True)
+    radius = db.IntegerProperty(required=True)
+    added_at = db.DateTimeProperty(auto_now_add=True)

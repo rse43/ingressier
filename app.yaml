@@ -20,6 +20,9 @@ handlers:
 - url: /static
   static_dir: static
 
+- url: /notifications/.*
+  script: notification.app
+
 - url: /heatmap.*
   script: heatmap.app
 
