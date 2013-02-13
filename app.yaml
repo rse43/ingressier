@@ -13,6 +13,10 @@ handlers:
   script: chat.app
   login: admin
 
+- url: /_ah/warmup
+  script: warmup.app
+  login: admin
+
 - url: /static/style.css
   static_files: static/style.css
   upload: static/style.css
@@ -37,3 +41,4 @@ libraries:
 inbound_services:
 - mail
 - xmpp_message
+- warmup

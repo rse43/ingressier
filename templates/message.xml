@@ -1,4 +1,4 @@
-<body>{{ text }}, {{ link }}</body>
+<body>{{ text }} {{ link }}</body>
 <html xmlns='http://jabber.org/protocol/xhtml-im'>
   <body xmlns='http://www.w3.org/1999/xhtml'>
     <a href='{{ link }}'>Click to see it on Google Map</a>

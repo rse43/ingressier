@@ -72,7 +72,7 @@ class CheckHandler(webapp2.RequestHandler):
             distance = calc_distance(target_location, result.centre_location)
             if distance < result.radius:
                 template_values = { 'link' : "https://sydneyresistancewatch.appspot.com/notifications/map?lat=%s&lon=%s" % (str(latitude), str(longitude)),
-                                    'text' : "%s is attacking our portal at " % (attacker) }
+                                    'text' : "%s is attacking our portal at" % (attacker) }
                 path = os.path.join(os.path.dirname(__file__), 'templates', 'message.xml')
                 xml = template.render(path, template_values)
                 status_code = xmpp.send_message(jids=result.email, raw_xml=True, body=xml, message_type=xmpp.MESSAGE_TYPE_CHAT)
@@ -104,7 +104,8 @@ class MapURLHandler(webapp2.RequestHandler):
     def get(self):
         latitude = float(self.request.get('lat').strip())
         longitude = float(self.request.get('lon').strip())
-        url = "geo:%s,%s?z=19" % (str(latitude), str(longitude))
+        # url = "geo:%s,%s?z=19" % (str(latitude), str(longitude))
+        url = "https://www.ingress.com/intel?latE6=%s&lngE6=%s&z=19" % (str(int(latitude * 1000000)), str(int(longitude * 1000000)))
         self.redirect(url)
 
 class RemoveHandler(webapp2.RequestHandler):
