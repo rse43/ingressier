@@ -1,11 +1,12 @@
-<message
-    from='{{ sender }}'
-    to='{{ receiver }}'>
-  <body>{{ text }}</body>
-  <url-data
-      xmlns='http://jabber.org/protocol/url-data'
-      xmlns:http='http://jabber.org/protocol/url-data/scheme/http'
-      target='{{ link }}'>
+<body>{{ text }}, {{ link }}</body>
+<html xmlns='http://jabber.org/protocol/xhtml-im'>
+  <body xmlns='http://www.w3.org/1999/xhtml'>
+    <a href='{{ link }}'>Click to see it on Google Map</a>
+  </body>
+</html>
+<url-data
+  xmlns='http://jabber.org/protocol/url-data'
+  xmlns:http='http://jabber.org/protocol/url-data/scheme/http'
+  target='{{ link }}'>
     <desc>Portal Location</desc>
-  </url-data>
-</message>
+</url-data>

@@ -14,6 +14,7 @@ from google.appengine.api import users
 from google.appengine.api import search
 from google.appengine.api import xmpp
 
+
 from model import NotificationSetting
 
 def create_document(email, latitude, longitude):
@@ -49,16 +50,16 @@ class CheckHandler(webapp2.RequestHandler):
         for result  in query_results:
             distance = calc_distance(target_location, result.centre_location)
             if distance < result.radius:
-                template_values = { 'sender' : "sydneyresistancewatch@appspot.com",
-                                    'receiver' : result.email,
-                                    'link' : "geo:%s,%s?z=19" % (str(latitude), str(longitude)),
-                                    'text' : "%s is attacking our portal at %s,%s" % (attacker, str(latitude), str(longitude)) }
+                template_values = { 'link' : "https://sydneyresistancewatch.appspot.com/notifications/map?lat=%s&lon=%s" % (str(latitude), str(longitude)),
+                                    'text' : "%s is attacking our portal at " % (attacker) }
                 path = os.path.join(os.path.dirname(__file__), 'templates', 'message.xml')
                 xml = template.render(path, template_values)
-                xmpp.send_message(jids=result.email, raw_xml=True, body=xml, message_type=xmpp.MESSAGE_TYPE_HEADLINE)
-                
+                status_code = xmpp.send_message(jids=result.email, raw_xml=True, body=xml, message_type=xmpp.MESSAGE_TYPE_CHAT)
+                chat_message_sent = (status_code == xmpp.NO_ERROR)
 
-
+                if not chat_message_sent:
+                    output = "%s is amoung one of the following errors: %s or %s" % (str(status_code), str(xmpp.INVALID_JID), str(xmpp.OTHER_ERROR))
+                    logging.debug(output)
 
 class NewHandler(webapp2.RequestHandler):
     def get(self):
@@ -78,6 +79,13 @@ class NewHandler(webapp2.RequestHandler):
     def post(self):
         pass
 
+class MapURLHandler(webapp2.RequestHandler):
+    def get(self):
+        latitude = float(self.request.get('lat').strip())
+        longitude = float(self.request.get('lon').strip())
+        url = "geo:%s,%s?z=19" % (str(latitude), str(longitude))
+        self.redirect(url)
+
 class RemoveHandler(webapp2.RequestHandler):
     def get(self):
         pass
@@ -94,7 +102,8 @@ logging.getLogger().setLevel(logging.DEBUG)
 app = webapp2.WSGIApplication([("/notifications/check", CheckHandler),
                                 ("/notifications/new", NewHandler),
                                 ("/notifications/remove", RemoveHandler),
-                                ("/notifications/show", ShowHandler)], debug=False)
+                                ("/notifications/show", ShowHandler),
+                                ("/notifications/map", MapURLHandler)], debug=False)
 
 def real_main():
     run_wsgi_app(app)

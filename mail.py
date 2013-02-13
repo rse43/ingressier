@@ -10,7 +10,9 @@ import datetime
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 from google.appengine.ext import db
+
 from google.appengine.api import mail
+from google.appengine.api import taskqueue
 
 from model import ItemDestroyActivity
 from model import LinkDestroyActivity
@@ -84,6 +86,9 @@ class NotificationMailHandler(InboundMailHandler):
                     item_location = db.GeoPt(lat=latitude, lon=longitude)
                     activity = ItemDestroyActivity(item_owner=owner, item_amount=item_amount, item_type=item_type, attacker=attacker, attack_time=attack_time, item_location=item_location)
                     activity.put()
+                    taskqueue.add(url='/notifications/check', params={ 'lat' : str(latitude),
+                                                                        'lon' : str(longitude),
+                                                                        'attacker' : attacker})
         except Exception, e:
             logging.debug(mail_message.original)
             logging.debug(decoded_html)
