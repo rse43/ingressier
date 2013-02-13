@@ -61,6 +61,27 @@ class CheckHandler(webapp2.RequestHandler):
                     output = "%s is amoung one of the following errors: %s or %s" % (str(status_code), str(xmpp.INVALID_JID), str(xmpp.OTHER_ERROR))
                     logging.debug(output)
 
+    def post(self):
+        latitude = float(self.request.get('lat').strip())
+        longitude = float(self.request.get('lon').strip())
+        attacker = self.request.get('attacker').strip()
+        target_location = db.GeoPt(lat=latitude, lon=longitude)
+        query_results = db.GqlQuery("SELECT * FROM NotificationSetting")
+
+        for result  in query_results:
+            distance = calc_distance(target_location, result.centre_location)
+            if distance < result.radius:
+                template_values = { 'link' : "https://sydneyresistancewatch.appspot.com/notifications/map?lat=%s&lon=%s" % (str(latitude), str(longitude)),
+                                    'text' : "%s is attacking our portal at " % (attacker) }
+                path = os.path.join(os.path.dirname(__file__), 'templates', 'message.xml')
+                xml = template.render(path, template_values)
+                status_code = xmpp.send_message(jids=result.email, raw_xml=True, body=xml, message_type=xmpp.MESSAGE_TYPE_CHAT)
+                chat_message_sent = (status_code == xmpp.NO_ERROR)
+
+                if not chat_message_sent:
+                    output = "%s is amoung one of the following errors: %s or %s" % (str(status_code), str(xmpp.INVALID_JID), str(xmpp.OTHER_ERROR))
+                    logging.debug(output)
+
 class NewHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
