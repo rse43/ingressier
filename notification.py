@@ -105,7 +105,7 @@ class MapURLHandler(webapp2.RequestHandler):
         latitude = float(self.request.get('lat').strip())
         longitude = float(self.request.get('lon').strip())
         # url = "geo:%s,%s?z=19" % (str(latitude), str(longitude))
-        url = "https://www.ingress.com/intel?latE6=%s&lngE6=%s&z=19" % (str(int(latitude * 1000000)), str(int(longitude * 1000000)))
+        url = "http://www.ingress.com/intel?latE6=%s&lngE6=%s&z=19" % (str(int(latitude * 1000000)), str(int(longitude * 1000000)))
         self.redirect(url)
 
 class RemoveHandler(webapp2.RequestHandler):
