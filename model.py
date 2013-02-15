@@ -3,6 +3,7 @@
 
 import modelx
 from google.appengine.ext import db
+from google.appengine.ext import ndb
 from uuid import uuid4
 
 class ItemDestroyActivity(db.Model):
@@ -40,7 +41,7 @@ class NotificationSetting(db.Model):
     email = db.StringProperty(required=True)
     centre_location = db.GeoPtProperty(required=True)
     radius = db.IntegerProperty(required=True)
-    added_at = db.DateTimeProperty(auto_now_add=True)from google.appengine.ext import ndb
+    added_at = db.DateTimeProperty(auto_now_add=True)
 
 
 class Base(ndb.Model, modelx.BaseX):
