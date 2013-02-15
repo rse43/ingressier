@@ -5,6 +5,10 @@ api_version: 1
 threadsafe: true
 
 handlers:
+- url: /(favicon\.ico|robots\.txt)
+  static_files: static/\1
+  upload: static/(.*)
+
 - url: /_ah/mail/.+
   script: mail.app
   login: admin
@@ -30,15 +34,42 @@ handlers:
 - url: /heatmap.*
   script: heatmap.app
 
+- url: /p/
+  static_dir: static/
+  expiration: 1000d
+
 - url: /.*
-  script: processor.app
-  login: admin
+  script: main.app
+
+builtins:
+- remote_api: on
+- deferred: on
+- appstats: on
 
 libraries:
 - name: lxml
   version: "2.3"
+- name: jinja2
+  version: latest
 
 inbound_services:
 - mail
 - xmpp_message
 - warmup
+
+skip_files:
+- ^(.*/)?app\.yaml
+- ^(.*/)?app\.yml
+- ^(.*/)?index\.yaml
+- ^(.*/)?index\.yml
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?.*\.py[co]
+- ^(.*/)?.*/RCS/.*
+- ^(.*/)?\..*
+- ^(.*/)?.*\.bak$
+- ^(.*/)?Icon\r
+- ^lib/.*
+- ^static/src/.*
+- ^static/lib/.*
+- ^static/dst/.*
